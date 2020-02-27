@@ -1,0 +1,210 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+.equity-warp{
+    width: 1060px;
+    min-height: 753px;
+    float: left;
+    margin-left: 18px;
+}
+.equity-top{
+    height: 200px;
+    width: 100%;
+    background: url("../images/usercenter_banner@2x.png")no-repeat;
+    position: relative;
+}
+.equity-btn{
+    width: 1022px;
+    height: 85px;
+    position: absolute;
+    bottom:0;
+    left:50%;
+    background: #ffffff;
+    margin-left: -511px;
+    border-top-left-radius:5px;
+    border-top-right-radius:5px;
+}
+.equity-btn div{
+    float: left;
+    width: 50%;
+    height: 100%;
+    text-align: center;
+    line-height: 30px;
+    padding: 10px 0;
+    box-sizing: border-box;
+}
+.equity-btn div p.btn-tit{
+    color:#ca963b;
+    font-size: 24px;
+    font-weight: 600;
+}
+.equity-btn div p.btn-sub{
+    color:#dec094;
+    font-size: 20px;
+}
+.equity-btn .btn{
+    border-top-right-radius:5px;
+    background: url("../images/recatangle_bg@2x.png")no-repeat;
+    background-size: cover;
+}
+.equity-btn .btn p.btn-tit{
+    color:#333333;
+}.equity-btn .btn p.btn-sub{
+     color:#666666;
+ }
+.equity-content{
+    padding: 40px 20px 20px;
+}
+.equity-content .content-hint{
+    width: 100%;
+    line-height: 50px;
+    padding-left: 20px;
+    background: #f5f5f5;
+    font-size: 18px;
+    color: #c4c4c4;
+    box-sizing: border-box;
+}
+.equity-content .content-hint span{
+    color: #dec29a;
+}
+.social{
+    margin-top: 20px;
+    border: 1px solid #e4e4e4;
+}
+.social-title{
+    height: 60px;
+    padding: 0 20px;
+    border-bottom: 1px solid #e4e4e4;
+    background: #f5f5f5;
+}
+.social-title p{
+    float: left;
+    padding: 20px 0;
+}
+.social-title .at-once{
+    float: right;
+    padding: 15px 0;
+}
+.at-once a{
+    color: #d5ae71;
+    font-size: 22px;
+    text-decoration: none;
+}
+.bg{
+    width: 60px;
+    height: 30px;
+    background: url("../images/start_box@2x.png")no-repeat;
+    background-size: cover;
+    text-align: center;
+    line-height: 30px;
+    color: #ffffff;
+    float: left;
+
+}
+.end-a{
+    position: absolute;right: 3px;
+}
+.start{
+    position: absolute;
+    margin-left:2px;
+}
+.end{
+    background: url("../images/ending_box@2x.png")no-repeat;
+    background-size: cover;
+    color: #d5ad70;
+}.line1{
+     width: 600px;
+     height: 12px;
+     border-top: 1px solid #d5ad70;
+     border-bottom: 1px solid #d5ad70;
+     float: left;
+     margin-top: 8px;
+     margin-left: 60px;
+     position: relative;
+ }
+.line-se{
+    width: 100%;
+    height: 100%;
+    background: #d5ad70;
+    position: absolute;
+    top:0;
+    left: 0;
+}
+.plan{
+    width: 722px;
+    margin:65px auto 10px;
+    position: relative;
+}
+.plan-hint{
+    position: absolute;
+    top: -57px;
+    left: 95%;
+}
+.hint1{
+    width: 60px;
+    height: 30px;
+    text-align: center;
+    line-height: 30px;
+    color: #ca963b;
+    border-radius: 20px;
+    background:#fef4d9;
+    border: 1px solid #ca963b;
+}
+.tiao{
+    height: 25px;
+    width: 1px;
+    background: #ca963b;
+    margin-left: 30px;
+}
+.if-dredge{
+    text-align: center;
+    margin-bottom: 20px;
+    color: #666666;
+    font-size: 16px;
+}
+.if-dredge span{
+    color: #d5ae71;
+}
+.reserved .line .line-se{
+    width: 50%;
+}
+.reserved .line .plan-hint{
+    left: 45%;
+}
+.intro-tit{
+    line-height: 50px;
+    font-size: 20px;
+    font-weight: 500;
+}
+th{
+    background: #ca963b;
+}
+.border-1{
+    /* border-left: 1px solid #ffffff; */
+}
+tr th{
+    color: #ffffff;
+}
+.equity-warp tr th,.equity-warp tr td{
+    width: 340px;
+    height: 45px;
+    text-align: center;
+}
+.equity-tab1 tr:nth-child(even){
+    background: #eeeeee;
+}
+.equity-tab2 tr:nth-child(odd){
+    background: #eeeeee;
+}
+.equity-tab3 tr:nth-child(even){
+    background: #eeeeee;
+}
+.eq-font{
+    color: #ca963b;font-weight: bold
+}
+.foot-hint{
+    color: #959595;
+    line-height: 26px;
+    margin-top: 20px;
+}
