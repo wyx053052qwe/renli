@@ -134,7 +134,7 @@
     //SmartPhone
     if (browser.versions.mobile) {
         // 移动端链接地址
-        location.href = "http://www.app.com/app/index"+test;
+        location.href = "http://renli.wangyunxing.club/app/index"+test;
     }
     // $(function () {
     //     $.post('https://m.renrenbao.com/?app=index/examine_login', '', function (data) {
