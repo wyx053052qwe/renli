@@ -14,10 +14,9 @@ use Pay;
 
 class PayController extends Controller
 {
-
     public function index()
     {
-        $data = Pays::join('personnel', 'pay.u_id', '=', 'personnel.u_id')->paginate(10);
+        $data = DB::table('alipay')->join('personnel', 'alipay.u_id', '=', 'personnel.u_id')->paginate(10);
         return view('pay.index', [
             'data' => $data,
         ]);
@@ -56,20 +55,20 @@ class PayController extends Controller
     public function socials()
     {
         $data = request()->post();
-        $u_id = session('u_id');
-        $user = DB::table('alipay')->where(['u_id' => $u_id, 'a_status' => 1])->first();
+        $p_id = session('u_id');
+        $user = DB::table('alipay')->where(['u_id' => $p_id, 'a_status' => 1])->first();
         if ($user) {
             return json_encode(['code' => 3, 'message' => "你有订单未支付请先支付"]);
         }
         if(empty($user)){
-            Pays::where(['u_id'=>$u_id,'p_status'=>1])->delete();
+            Pays::where(['u_id'=>$p_id,'p_status'=>1])->delete();
         }
-        $dataa = Pays::where(['u_id'=>$u_id,'p_status'=>1])->first();
+        $dataa = Pays::where(['u_id'=>$p_id,'p_status'=>1])->first();
         if($dataa){
             return json_encode(['code' => 3, 'message' => "你有订单未支付请先支付"]);
         }
-        $date = Wage::where('u_id', $u_id)->first(['w_jishu']);
-        $userData = Personnel::where('u_id', $u_id)->first(['u_company', 'u_id_cart']);
+        $date = Wage::where('u_id', $p_id)->first(['w_jishu']);
+        $userData = Personnel::where('u_id', $p_id)->first(['u_company', 'u_id_cart']);
         $type = $data['type'];
         $money = $data['many'];
         $jishu = (int) $date['w_jishu'];
@@ -105,12 +104,13 @@ class PayController extends Controller
         }
 
         $pay = [
-            'u_id' => $u_id,
+            'u_id' => $p_id,
             'p_id_cart' => $userData['u_id_cart'],
             'p_gongsi' => $userData['u_company'],
             'p_month' => $month,
             'p_money' => $zong,
             'type'=>1,
+            'delete'=>1,
             'p_status'=>1,
             'create_time' => time(),
         ];
@@ -126,17 +126,17 @@ class PayController extends Controller
     public function socialss()
     {
         $data = request()->post();
-        $u_id = session('u_id');
-        $user = DB::table('alipay')->where(['u_id' => $u_id, 'a_status' => 1])->first();
+        $p_id = session('u_id');
+        $user = DB::table('alipay')->where(['u_id' => $p_id, 'a_status' => 1])->first();
         if ($user) {
             return json_encode(['code' => 3, 'message' => "你有订单未支付请先支付"]);
         }
-        $dataa = Pays::where(['u_id'=>$u_id,'p_status'=>1])->first();
+        $dataa = Pays::where(['u_id'=>$p_id,'p_status'=>1])->first();
         if($dataa){
             return json_encode(['code' => 3, 'message' => "你有订单未支付请先支付"]);
         }
-        $date = Wage::where('u_id', $u_id)->first(['w_jishu']);
-        $userData = Personnel::where('u_id', $u_id)->first(['u_company', 'u_id_cart']);
+        $date = Wage::where('u_id', $p_id)->first(['w_jishu']);
+        $userData = Personnel::where('u_id', $p_id)->first(['u_company', 'u_id_cart']);
         $type = $data['type'];
         $money = $data['many'];
         $jishu = (int) $date['w_jishu'];
@@ -172,13 +172,14 @@ class PayController extends Controller
         }
 
         $pay = [
-            'u_id' => $u_id,
+            'u_id' => $p_id,
             'p_id_cart' => $userData['u_id_cart'],
             'p_gongsi' => $userData['u_company'],
             'p_month' => $month,
             'p_money' => $zong,
             'type'=>2,
-            'p_status'=>2,
+            'delete'=>1,
+            'p_status'=>1,
             'create_time' => time(),
         ];
         $res = Pays::insert($pay);
@@ -191,12 +192,12 @@ class PayController extends Controller
     }
     public function cofirm()
     {
-        $u_id = session('u_id');
-//        $user = DB::table('alipay')->where(['u_id' => $u_id, 'a_status' => 1])->first();
+        $p_id = session('u_id');
+//        $user = DB::table('alipay')->where(['u_id' => $p_id, 'a_status' => 1])->first();
 //        if ($user) {
 //            return json_encode(['code' => 3, 'message' => "你有订单未支付请先支付"]);die;
 //        }
-        $data = Personnel::where('personnel.u_id', $u_id)
+        $data = Personnel::where('personnel.u_id', $p_id)
             ->join('wage', 'personnel.u_id', '=', 'wage.u_id')
             ->join('pay', 'personnel.u_id', 'pay.u_id')
             ->first(['u_name', 'u_id_cart', 'u_company', 'p_month', 'w_jishu', 'p_money']);
@@ -206,11 +207,10 @@ class PayController extends Controller
     }
     public function order()
     {
-        $u_id = session('u_id');
+        $p_id = session('u_id');
         $data = DB::table('alipay')
             ->join('personnel','alipay.u_id','=','personnel.u_id')
-            ->join('pay','alipay.u_id','=','pay.u_id')
-            ->where(['alipay.u_id'=>$u_id])->get();
+            ->where(['alipay.u_id'=>$p_id,'a_status'=>1,'a_delete'=>1])->get();
 //dd($data);
         if($data->first()){
             $data = $data;
@@ -224,11 +224,10 @@ class PayController extends Controller
     }
     public function orders()
     {
-        $u_id = session('u_id');
+        $p_id = session('u_id');
         $data = DB::table('alipay')
             ->join('personnel','alipay.u_id','=','personnel.u_id')
-            ->join('pay','alipay.u_id','=','pay.u_id')
-            ->where(['alipay.u_id'=>$u_id,'pay.p_status'=>2])->get();
+            ->where(['alipay.u_id'=>$p_id,'a_status'=>2,'a_delete'=>1])->get();
         if($data->first()){
             $data = $data;
         }else{
@@ -240,8 +239,9 @@ class PayController extends Controller
     }
     public function pays()
     {
-        $u_id = session('u_id');
-        $data = Pays::where(['u_id'=>$u_id])->first(['p_money', 'type']);
+        $p_id = session('u_id');
+        $data = Pays::where(['u_id'=>$p_id,'p_status'=>1])->first(['p_money', 'type','p_month']);
+//        dd($data);
         if (empty($data)) {
             return redirect('/');
         }
@@ -256,13 +256,16 @@ class PayController extends Controller
             'total_amount' => $data['p_money'],
             'subject' => $type,
         ];
-        $arr = DB::table('alipay')->where(['u_id'=>$u_id,'a_status'=>1])->first();
+        $arr = DB::table('alipay')->where(['u_id'=>$p_id,'a_status'=>1])->first();
         if(empty($arr)){
             DB::table('alipay')->insert([
                 'out_trade_no'=>$out_trade_no,
                 'total_amount'=>$data['p_money']*100,
-                'u_id'=>$u_id,
+                'u_id'=>$p_id,
+                'a_month'=>$data['p_month'],
                 'a_status' => 1,
+                'a_delete'=>1,
+                'created_time'=>time(),
                 'type'=>$data['type']
             ]);
         }
@@ -274,19 +277,19 @@ class PayController extends Controller
         $data = Pay::alipay()->verify(); // 是的，验签就这么简单！
         if ($data) {
             $total_amount = $data->total_amount * 100;
-            $u_id = session('u_id');
+            $p_id = session('u_id');
             $arr = [
                 'out_trade_no' => $data->out_trade_no,
                 'trade_no' => $data->trade_no,
                 'total_amount' => $total_amount,
                 'app_id' => $data->app_id,
                 'a_status' => 1,
-                'u_id' => $u_id,
+                'u_id' => $p_id,
             ];
             DB::table('alipay')->where('out_trade_no',$data->out_trade_no)->update([
                 'trade_no'=>$data->trade_no,
                 'app_id'=>$data->app_id,
-                'u_id' => $u_id,
+                'u_id' => $p_id,
 
             ]);
             return view('pay.return');
@@ -324,7 +327,7 @@ class PayController extends Controller
                 //注意：
                 //付款完成后，支付宝系统发送该交易状态通知
                 $this->UserCharge($total_amount, 'alipay', $out_trade_no, $buyer_id, 2, $seller_id, $app_id);
-                DB::table('alipay')->where(['out_trade_no'=>$out_trade_no])->update(['a_status' => 2, 'update_time' => time()]);
+                DB::table('alipay')->where(['out_trade_no'=>$out_trade_no])->update(['a_status' => 2, 'updated_time' => time()]);
                 //修改订单状态
             }
 
@@ -342,18 +345,36 @@ class PayController extends Controller
     {
         $data = request()->input();
         $id = $data['id'];
-
-        $u_id = DB::table('alipay')->where('p_id',$id)->first(['u_id']);
-        if(empty($u_id)){
+        $p_id = DB::table('alipay')->where('p_id',$id)->first(['u_id']);
+        if(empty($p_id)){
             return json_encode(['code'=>1,'message'=>"失败"]);
         }
-        $u_id= $u_id->u_id;
-        $res = DB::table('alipay')->where('p_id',$id)->delete();
-        Pays::where('u_id',$u_id)->delete();
+        $p_id= $p_id->u_id;
+        $res = DB::table('alipay')->where('p_id',$id)->update(['a_delete'=>2]);
         if($res){
             return json_encode(['code'=>2,'message'=>"成功"]);
         }else{
             return json_encode(['code'=>1,'message'=>"失败"]);
         }
+    }
+    //删除
+    public function delete()
+    {
+        $p_id = request()->input('p_id');
+        $result = DB::table('alipay')->where('p_id',$p_id)->delete();
+        if(!$result){
+            return json_encode(['code'=>1,'message'=>"删除失败"]);
+        }
+        return json_encode(['code'=>2,'message'=>"删除成功"]);
+    }
+    public function dels()
+    {
+        $p_id = request()->input('p_id');
+        $p_id = explode(',',trim($p_id,','));
+        $result = DB::table('alipay')->whereIN('p_id',$p_id)->delete();
+        if(!$result){
+            return json_encode(['code'=>1,'message'=>"删除失败"]);
+        }
+        return json_encode(['code'=>2,'message'=>"删除成功"]);
     }
 }

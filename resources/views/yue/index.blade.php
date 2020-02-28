@@ -142,11 +142,11 @@
         <th>操作</th>
     </tr>
     @foreach($data as $d)
-        <tr>
-            <td>
-                <input type="checkbox" class="fu" >
-                {{$d->y_id}}
-            </td>
+    <tr y_id="{{$d->y_id}}">
+        <td>
+            <input type="checkbox" class="fu" >
+            {{$d->y_id}}
+        </td>
             <td>{{$d->y_name}}</td>
             <td>{{$d->y_zhang}}</td>
             <td>{{$d->y_id_cart}}</td>
@@ -154,19 +154,25 @@
             <td>{{$d->y_gyjc}}</td>
             <td>{{$d->y_dyjc}}</td>
             <td>{{$d->y_yjc}}</td>
-            <td>
-                <div class="layui-btn-group">
-                    <button type="button" class="layui-btn layui-btn-sm">
-                        <i class="layui-icon">&#xe642;</i>
-                    </button>
-                    <button type="button" class="layui-btn layui-btn-sm">
-                        <i class="layui-icon">&#xe640;</i>
-                    </button>
-                </div>
-            </td>
+        <td>
+            <div class="layui-btn-group">
+                <button type="button" class="layui-btn layui-btn-sm">
+                    <i class="layui-icon  update">&#xe642;</i>
+                </button>
+                <button type="button" class="layui-btn layui-btn-sm">
+                    <i class="layui-icon  del">&#xe640;</i>
+                </button>
+            </div>
+        </td>
         </tr>
         @endforeach
 </table>
+<div>
+    <button class="layui-btn dels" lay-submit lay-filter="formDemo">批量删除</button>
+</div>
+<div id="test1">
+    {{$data->links()}}
+</div>
 <script src="../../../layuiadmin/layui/layui.js"></script>
 <script>
     layui.config({
@@ -300,18 +306,18 @@
         });
         //导出
         $(document).on('click','.export',function(){
-            var u_id='';
+            var y_id='';
             $('.fu').each(function(){
                 if($(this).prop('checked')){
-                    u_id +=','+$(this).parent().parent().attr('u_id');
+                    y_id +=','+$(this).parent().parent().attr('y_id');
                 }
             })
-            if(u_id == ''){
+            if(y_id == ''){
                 layer.alert('请选择数据',{icon:5,time:3000});return;
             }
             $.ajax({
                 url: '{{url('yue/export')}}',
-                data:{u_id:u_id},
+                data:{y_id:y_id},
                 dataType: 'json',
                 success: function(res) {
                     // 假如返回的 res.data 是需要导出的列表数据
@@ -349,6 +355,54 @@
                 }
             });
         });
+        //删除
+        $(document).on('click','.del',function(){
+            var y_id = $(this).parents('td').parent('tr').attr('y_id');
+            $.ajax({
+                url:"/yue/delete",
+                method: "post",
+                data:{y_id:y_id},
+                dataType:"json",
+                success:function(res){
+                    if(res.code==2){
+                        layer.alert(res.message,{icon:1,time:6000});
+                        setTimeout(function(){
+                            window.location.reload();//刷新当前页面.
+                        },1000)
+                    }else{
+                        layer.alert(res.message,{icon:5,time:5000});
+                    }
+                }
+            });
+        });
+        $(document).on('click','.dels',function(){
+            var y_id='';
+            $('.fu').each(function(){
+                if($(this).prop('checked')){
+                    y_id +=','+$(this).parent().parent().attr('y_id');
+                }
+            });
+            if(y_id == ''){
+                layer.alert('请选择数据',{icon:5,time:3000});return;
+            }
+            $.ajax({
+                url:"{{url('yue/dels')}}",
+                data:{y_id:y_id},
+                method:"post",
+                dataType:"json",
+                success:function(res){
+                    if(res.code == 2){
+                        layer.alert(res.message,{icon:1,time:3000});
+                        setTimeout(function(){
+                            window.location.reload();//刷新当前页面.
+                        },1000)
+                    }else{
+                        layer.alert(res.message,{icon:5,time:3000});
+                    }
+                }
+            });
+        });
+
     });
 
 </script>

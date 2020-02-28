@@ -41,6 +41,8 @@ Route::prefix('/shop')->middleware('login')->group(function () {
     Route::get('add', 'Shop\ShopController@add');
     Route::post('doadd', 'Shop\ShopController@doadd');
     Route::get('index', 'Shop\ShopController@index');
+    Route::post('delete', 'Shop\ShopController@delete');
+    Route::post('dels', 'Shop\ShopController@dels');
 
 });
 Route::prefix('/yuan')->middleware('login')->group(function () {
@@ -73,6 +75,8 @@ Route::prefix('/yue')->middleware('login')->group(function () {
     Route::get('yue', 'Yue\YueController@yue');
     Route::post('doyue', 'Yue\YueController@doyue');
     Route::post('upload', 'Yue\YueController@upload');
+    Route::post('delete', 'Yue\YueController@delete');
+    Route::post('dels', 'Yue\YueController@dels');
 });
 Route::get('/pay/index', 'Pay\PayController@index');
 Route::prefix('/pay')->middleware('checklogin')->group(function () {
@@ -80,6 +84,8 @@ Route::prefix('/pay')->middleware('checklogin')->group(function () {
     Route::get('order', 'Pay\PayController@order');
     Route::get('orders', 'Pay\PayController@orders');
     Route::post('del', 'Pay\PayController@del');
+    Route::post('dels', 'Pay\PayController@dels');
+    Route::post('delete', 'Pay\PayController@delete');
     Route::get('return', 'Pay\PayController@return');
     Route::post('notify', 'Pay\PayController@notify');
 });

@@ -101,15 +101,15 @@
 
 </style>
 <body>
-<div class="layui-form-item block">
-    <div class="layui-form-label block">导入人员信息</div>
-    <div class="layui-form-block block">
-        <input type="file" class="layui-btn layui-btn-primary" id="LAY-excel-import-excel" multiple="multiple">
-    </div>
-</div>
-<div  class="layui-form-block sss">
-    <button class="layui-btn layui-btn-normal export">导出</button>
-</div>
+<!--<div class="layui-form-item block">-->
+<!--    <div class="layui-form-label block">导入人员信息</div>-->
+<!--    <div class="layui-form-block block">-->
+<!--        <input type="file" class="layui-btn layui-btn-primary" id="LAY-excel-import-excel" multiple="multiple">-->
+<!--    </div>-->
+<!--</div>-->
+<!--<div  class="layui-form-block sss">-->
+<!--    <button class="layui-btn layui-btn-normal export">导出</button>-->
+<!--</div>-->
 
 <table class="layui-table">
     <tr>
@@ -125,16 +125,29 @@
         <th>操作</th>
     </tr>
     @foreach($data as $d)
-    <tr>
-    <td>{{$d->u_name}}</td>
-    <td>{{$d->p_gongsi}}</td>
-    <td>{{$d->p_id_cart}}</td>
-    <td>{{$d->p_month}}</td>
-    <td>{{$d->p_money}}</td>
-    <td>@if($d->p_status==1) 未支付 @else 支付 @endif</td>
-    <td>{{date('Y-m-d H:i:s',$d->create_time)}}</td>
-    <td>{{date('Y-m-d H:i:s',$d->update_time)}}</td>
-    <td></td>
+    <tr p_id="{{$d->p_id}}">
+        <td>
+            <input type="checkbox" class="fu" >
+            {{$d->p_id}}
+        </td>
+        <td>{{$d->u_name}}</td>
+        <td>{{$d->u_company}}</td>
+        <td>{{$d->u_id_cart}}</td>
+        <td>{{$d->a_month}}</td>
+        <td>{{$d->total_amount/100}}</td>
+        <td>@if($d->a_status==1) 未支付 @else 支付 @endif</td>
+        <td>{{date('Y-m-d H:i:s',$d->updated_time)}}</td>
+        <td>{{date('Y-m-d H:i:s',$d->created_time)}}</td>
+        <td>
+            <div class="layui-btn-group">
+<!--                <button type="button" class="layui-btn layui-btn-sm">-->
+<!--                    <i class="layui-icon  update">&#xe642;</i>-->
+<!--                </button>-->
+                <button type="button" class="layui-btn layui-btn-sm">
+                    <i class="layui-icon  del">&#xe640;</i>
+                </button>
+            </div>
+        </td>
     </tr>
     @endforeach
 </table>
@@ -173,120 +186,120 @@
             }
         });
 
-        //导入
-        $('.layui-btn.layuiadmin-btn-list').on('click', function(){
-            var type = $(this).data('type');
-            active[type] ? active[type].call(this) : '';
-        });
-        // 监听上传文件的事件
-        $('#LAY-excel-import-excel').change(function(e) {
-            var files = e.target.files;
-            uploadExcel(files);
-        });
-        // 文件拖拽
-        $('body')[0].ondragover = function(e) {
-            e.preventDefault();
-        }
-        $('body')[0].ondrop = function(e) {
-            e.preventDefault();
-            var files = e.dataTransfer.files;
-            uploadExcel(files);
-        }
-        /**
-         * 上传excel的处理函数，传入文件对象数组
-         * @param  {[type]} files [description]
-         * @return {[type]}       [description]
-         */
-        function uploadExcel(files) {
-            try {
-                excel.importExcel(files, {
-                    // 读取数据的同时梳理数据
-                    fields: {
-                        'u_id': 'A'
-                        ,'u_company': 'B'
-                        ,'u_management': 'C'
-                        ,'u_references': 'D'
-                        ,'u_unit': 'E'
-                        ,'u_in_time': 'F'
-                        ,'u_name': 'G'
-                        ,'u_sex': 'H'
-                        ,'u_phone': 'I'
-                        ,'u_id_cart': 'J'
-                        ,'u_marriage': 'K'
-                        ,'u_position': 'L'
-                        ,'u_professional': 'M'
-                        ,'u_title': 'N'
-                        ,'u_formal': 'O'
-                        ,'u_address': 'P'
-                        ,'u_number': 'Q'
-                        ,'a_account': 'R'
-                        ,'a_personal': 'S'
-                        ,'a_amount': 'T'
-                        ,'a_month': 'U'
-                        ,'a_month_personal': 'V'
-                        ,'a_open': 'W'
-                        ,'a_id_card': 'X'
-                        ,'a_zhuanhu': 'Y'
-                        ,'w_jishu': 'Z'
-                        ,'w_kaihu': 'AA'
-                        ,'w_id_card': 'AB'
-                        ,'w_liushui': 'AC'
-                        ,'w_date': 'AD'
-                        ,'q_yue':'AE'
-                        ,'q_dai':'AF'
-                        ,'q_dan':'AG'
-                        ,'q_dongjie':'AH'
-
-                    }
-                }, function(data) {
-                    // 还可以再进行数据梳理
-                    //    data = excel.filterImportData(data, {
-                    //      'id': 'A'
-                    //      ,'username': 'B'
-                    //      ,'experience': 'C'
-                    //      ,'sex': 'D'
-                    //      ,'score': 'E'
-                    //      ,'city': 'F'
-                    //      ,'classify': 'G'
-                    //      ,'wealth': 'H'
-                    //      ,'sign': 'I'
-                    //    });
-                    // 如果不需要展示直接上传，可以再次 $.ajax() 将JSON数据通过 JSON.stringify() 处理后传递到后端即可
-                    $.ajax({
-                        url: '/yuan/upload'
-                        ,method:"post"
-                        , data:{data:data}
-                        , dataType: 'json'
-                        , success: function (res) {
-                            if(res.code == 1){
-                                layer.alert(res.message,{icon:5});
-                            }else if(res.code == 2){
-                                layer.alert(res.message,{icon:1});
-                                setTimeout(function(){
-                                    window.location.reload();//刷新当前页面.
-                                },1000)
-                            }else if(res.code == 3){
-                                layer.alert(res.message,{icon:5});
-                            }
-                        }
-                    });
-                    //展示表格文件转换成的json数据格式
-                    // layer.open({
-                    //     title: '文件转换结果'
-                    //     ,area: ['799px', '399px']
-                    //     ,tipsMore: true
-                    //     ,content: laytpl($('#LAY-excel-export-ans').html()).render({data: data, files: files})
-                    //     ,success: function() {
-                    //         element.render('tab');
-                    //         layui.code({
-                    //         });
-                    //     }
-                    // });
-                });
-            } catch (e) {
-                layer.alert(e.message);
-            }
-        };
+        // //导入
+        // $('.layui-btn.layuiadmin-btn-list').on('click', function(){
+        //     var type = $(this).data('type');
+        //     active[type] ? active[type].call(this) : '';
+        // });
+        // // 监听上传文件的事件
+        // $('#LAY-excel-import-excel').change(function(e) {
+        //     var files = e.target.files;
+        //     uploadExcel(files);
+        // });
+        // // 文件拖拽
+        // $('body')[0].ondragover = function(e) {
+        //     e.preventDefault();
+        // }
+        // $('body')[0].ondrop = function(e) {
+        //     e.preventDefault();
+        //     var files = e.dataTransfer.files;
+        //     uploadExcel(files);
+        // }
+        // /**
+        //  * 上传excel的处理函数，传入文件对象数组
+        //  * @param  {[type]} files [description]
+        //  * @return {[type]}       [description]
+        //  */
+        // function uploadExcel(files) {
+        //     try {
+        //         excel.importExcel(files, {
+        //             // 读取数据的同时梳理数据
+        //             fields: {
+        //                 'u_id': 'A'
+        //                 ,'u_company': 'B'
+        //                 ,'u_management': 'C'
+        //                 ,'u_references': 'D'
+        //                 ,'u_unit': 'E'
+        //                 ,'u_in_time': 'F'
+        //                 ,'u_name': 'G'
+        //                 ,'u_sex': 'H'
+        //                 ,'u_phone': 'I'
+        //                 ,'u_id_cart': 'J'
+        //                 ,'u_marriage': 'K'
+        //                 ,'u_position': 'L'
+        //                 ,'u_professional': 'M'
+        //                 ,'u_title': 'N'
+        //                 ,'u_formal': 'O'
+        //                 ,'u_address': 'P'
+        //                 ,'u_number': 'Q'
+        //                 ,'a_account': 'R'
+        //                 ,'a_personal': 'S'
+        //                 ,'a_amount': 'T'
+        //                 ,'a_month': 'U'
+        //                 ,'a_month_personal': 'V'
+        //                 ,'a_open': 'W'
+        //                 ,'a_id_card': 'X'
+        //                 ,'a_zhuanhu': 'Y'
+        //                 ,'w_jishu': 'Z'
+        //                 ,'w_kaihu': 'AA'
+        //                 ,'w_id_card': 'AB'
+        //                 ,'w_liushui': 'AC'
+        //                 ,'w_date': 'AD'
+        //                 ,'q_yue':'AE'
+        //                 ,'q_dai':'AF'
+        //                 ,'q_dan':'AG'
+        //                 ,'q_dongjie':'AH'
+        //
+        //             }
+        //         }, function(data) {
+        //             // 还可以再进行数据梳理
+        //             //    data = excel.filterImportData(data, {
+        //             //      'id': 'A'
+        //             //      ,'username': 'B'
+        //             //      ,'experience': 'C'
+        //             //      ,'sex': 'D'
+        //             //      ,'score': 'E'
+        //             //      ,'city': 'F'
+        //             //      ,'classify': 'G'
+        //             //      ,'wealth': 'H'
+        //             //      ,'sign': 'I'
+        //             //    });
+        //             // 如果不需要展示直接上传，可以再次 $.ajax() 将JSON数据通过 JSON.stringify() 处理后传递到后端即可
+        //             $.ajax({
+        //                 url: '/yuan/upload'
+        //                 ,method:"post"
+        //                 , data:{data:data}
+        //                 , dataType: 'json'
+        //                 , success: function (res) {
+        //                     if(res.code == 1){
+        //                         layer.alert(res.message,{icon:5});
+        //                     }else if(res.code == 2){
+        //                         layer.alert(res.message,{icon:1});
+        //                         setTimeout(function(){
+        //                             window.location.reload();//刷新当前页面.
+        //                         },1000)
+        //                     }else if(res.code == 3){
+        //                         layer.alert(res.message,{icon:5});
+        //                     }
+        //                 }
+        //             });
+        //             //展示表格文件转换成的json数据格式
+        //             // layer.open({
+        //             //     title: '文件转换结果'
+        //             //     ,area: ['799px', '399px']
+        //             //     ,tipsMore: true
+        //             //     ,content: laytpl($('#LAY-excel-export-ans').html()).render({data: data, files: files})
+        //             //     ,success: function() {
+        //             //         element.render('tab');
+        //             //         layui.code({
+        //             //         });
+        //             //     }
+        //             // });
+        //         });
+        //     } catch (e) {
+        //         layer.alert(e.message);
+        //     }
+        // };
 //全选
         $(document).on('click', ".checkbox",function(){
             if($(this).prop('checked')){
@@ -300,154 +313,154 @@
             }
         });
 
-        //导出
-        $(document).on('click','.export',function(){
-            var u_id='';
-            $('.fu').each(function(){
-                if($(this).prop('checked')){
-                    u_id +=','+$(this).parent().parent().attr('u_id');
-                }
-            });
-            if(u_id == ''){
-                layer.alert('请选择数据',{icon:5,time:3000});return;
-            }
-            $.ajax({
-                url: '{{url('yuan/export')}}',
-                data:{u_id:u_id},
-                dataType: 'json',
-                success: function(res) {
-                    // 假如返回的 res.data 是需要导出的列表数据
-                    console.log(res.data);// [{name: 'wang', age: 18, sex: '男'}, {name: 'layui', age: 3, sex: '女'}]
-                    // 1. 数组头部新增表头
-                    res.data.unshift({
-                        u_id: '序号',
-                        u_company: '公司',
-                        u_management: '管理',
-                        u_references: '介绍人',
-                        u_unit: '单位',
-                        u_in_time: '入职时间',
-                        u_name: '姓名',
-                        u_sex: '性别',
-                        u_phone: '手机号',
-                        u_id_cart: '身份证号',
-                        u_marriage: '婚姻状况',
-                        u_position: '职务',
-                        u_professional: '职业',
-                        u_title: '职称',
-                        u_formal: '学历',
-                        u_address: '家庭住址',
-                        u_number: '夫妻编号',
-                        a_account: '公积金账号',
-                        a_personal: '个人缴存基数',
-                        a_amount: '个人月缴存额',
-                        a_month: '单位月缴存额',
-                        a_month_personal: '月缴存额',
-                        a_open: '公积金开户 银行卡开户行',
-                        a_id_card: '银行卡号',
-                        a_zhuanhu: '是否转户',
-                        w_jishu: '工资基数',
-                        w_kaihu: '银行卡开户行',
-                        w_id_card: '银行卡号',
-                        w_liushui: '是否需要流水',
-                        w_date: '开户日期',
-                        q_yue: '个人账户余额',
-                        q_dai: '是否贷款',
-                        q_dan: '是否担保',
-                        q_dongjie: '账户是否冻结',
-                    });
-                    // 2. 如果需要调整顺序，请执行梳理函数
-                    var data = excel.filterExportData(res.data, {
-                        u_id:'u_id',
-                        u_company: 'u_company',
-                        u_management:'u_management',
-                        u_references:'u_references',
-                        u_unit:'u_unit',
-                        u_in_time:'u_in_time',
-                        u_name:'u_name',
-                        u_sex:'u_sex',
-                        u_phone:'u_phone',
-                        u_id_cart:'u_id_cart',
-                        u_marriage:'u_marriage',
-                        u_position:'u_position',
-                        u_professional:'u_professional',
-                        u_title:'u_title',
-                        u_formal:'u_formal',
-                        u_address:'u_address',
-                        u_number:'u_number',
-                        a_account:'a_account',
-                        a_personal:'a_personal',
-                        a_amount:'a_amount',
-                        a_month:'a_month',
-                        a_month_personal:'a_month_personal',
-                        a_open:'a_open',
-                        a_id_card:'a_id_card',
-                        a_zhuanhu:'a_zhuanhu',
-                        w_jishu:'w_jishu',
-                        w_kaihu:'w_kaihu',
-                        w_id_card:'w_id_card',
-                        w_liushui:'w_liushui',
-                        w_date:'w_date',
-                        q_yue:'q_yue',
-                        q_dai:'q_dai',
-                        q_dan:'q_dan',
-                        q_dongjie:'q_dongjie',
-                    });
-                    // 3. 执行导出函数，系统会弹出弹框
-                    var timestart = Date.now();
-                    layui.excel.exportExcel({
-                        sheet1:data
-                    }, '人员信息.xlsx', 'xlsx');
-                    var timeend = Date.now();
-                    var spent = (timeend - timestart) / 1000;
-                    layer.alert('单纯导出耗时 '+spent+' s');
-                }
-            });
-        });
+        // //导出
+        // $(document).on('click','.export',function(){
+        //     var u_id='';
+        //     $('.fu').each(function(){
+        //         if($(this).prop('checked')){
+        //             u_id +=','+$(this).parent().parent().attr('u_id');
+        //         }
+        //     });
+        //     if(u_id == ''){
+        //         layer.alert('请选择数据',{icon:5,time:3000});return;
+        //     }
+        //     $.ajax({
+        //         url: '{{url('yuan/export')}}',
+        //         data:{u_id:u_id},
+        //     dataType: 'json',
+        //         success: function(res) {
+        //         // 假如返回的 res.data 是需要导出的列表数据
+        //         console.log(res.data);// [{name: 'wang', age: 18, sex: '男'}, {name: 'layui', age: 3, sex: '女'}]
+        //         // 1. 数组头部新增表头
+        //         res.data.unshift({
+        //             u_id: '序号',
+        //             u_company: '公司',
+        //             u_management: '管理',
+        //             u_references: '介绍人',
+        //             u_unit: '单位',
+        //             u_in_time: '入职时间',
+        //             u_name: '姓名',
+        //             u_sex: '性别',
+        //             u_phone: '手机号',
+        //             u_id_cart: '身份证号',
+        //             u_marriage: '婚姻状况',
+        //             u_position: '职务',
+        //             u_professional: '职业',
+        //             u_title: '职称',
+        //             u_formal: '学历',
+        //             u_address: '家庭住址',
+        //             u_number: '夫妻编号',
+        //             a_account: '公积金账号',
+        //             a_personal: '个人缴存基数',
+        //             a_amount: '个人月缴存额',
+        //             a_month: '单位月缴存额',
+        //             a_month_personal: '月缴存额',
+        //             a_open: '公积金开户 银行卡开户行',
+        //             a_id_card: '银行卡号',
+        //             a_zhuanhu: '是否转户',
+        //             w_jishu: '工资基数',
+        //             w_kaihu: '银行卡开户行',
+        //             w_id_card: '银行卡号',
+        //             w_liushui: '是否需要流水',
+        //             w_date: '开户日期',
+        //             q_yue: '个人账户余额',
+        //             q_dai: '是否贷款',
+        //             q_dan: '是否担保',
+        //             q_dongjie: '账户是否冻结',
+        //         });
+        //         // 2. 如果需要调整顺序，请执行梳理函数
+        //         var data = excel.filterExportData(res.data, {
+        //             u_id:'u_id',
+        //             u_company: 'u_company',
+        //             u_management:'u_management',
+        //             u_references:'u_references',
+        //             u_unit:'u_unit',
+        //             u_in_time:'u_in_time',
+        //             u_name:'u_name',
+        //             u_sex:'u_sex',
+        //             u_phone:'u_phone',
+        //             u_id_cart:'u_id_cart',
+        //             u_marriage:'u_marriage',
+        //             u_position:'u_position',
+        //             u_professional:'u_professional',
+        //             u_title:'u_title',
+        //             u_formal:'u_formal',
+        //             u_address:'u_address',
+        //             u_number:'u_number',
+        //             a_account:'a_account',
+        //             a_personal:'a_personal',
+        //             a_amount:'a_amount',
+        //             a_month:'a_month',
+        //             a_month_personal:'a_month_personal',
+        //             a_open:'a_open',
+        //             a_id_card:'a_id_card',
+        //             a_zhuanhu:'a_zhuanhu',
+        //             w_jishu:'w_jishu',
+        //             w_kaihu:'w_kaihu',
+        //             w_id_card:'w_id_card',
+        //             w_liushui:'w_liushui',
+        //             w_date:'w_date',
+        //             q_yue:'q_yue',
+        //             q_dai:'q_dai',
+        //             q_dan:'q_dan',
+        //             q_dongjie:'q_dongjie',
+        //         });
+        //         // 3. 执行导出函数，系统会弹出弹框
+        //         var timestart = Date.now();
+        //         layui.excel.exportExcel({
+        //             sheet1:data
+        //         }, '人员信息.xlsx', 'xlsx');
+        //         var timeend = Date.now();
+        //         var spent = (timeend - timestart) / 1000;
+        //         layer.alert('单纯导出耗时 '+spent+' s');
+        //     }
+        // });
+        // });
 
-         //删除
+        //删除
         $(document).on('click','.del',function(){
-           var u_id = $(this).parents('td').parent('tr').attr('u_id');
-           $.ajax({
-               url:"/yuan/delete",
-               method: "post",
-               data:{u_id:u_id},
-               dataType:"json",
-               success:function(res){
-                   if(res.code==2){
-                       layer.alert(res.message,{icon:1,time:6000});
-                       setTimeout(function(){
-                           window.location.reload();//刷新当前页面.
-                       },1000)
-                   }else{
-                       layer.alert(res.message,{icon:5,time:5000});
-                   }
-               }
-           });
+            var p_id = $(this).parents('td').parent('tr').attr('p_id');
+            $.ajax({
+                url:"/pay/delete",
+                method: "post",
+                data:{p_id:p_id},
+                dataType:"json",
+                success:function(res){
+                    if(res.code==2){
+                        layer.alert(res.message,{icon:1,time:6000});
+                        setTimeout(function(){
+                            window.location.reload();//刷新当前页面.
+                        },1000)
+                    }else{
+                        layer.alert(res.message,{icon:5,time:5000});
+                    }
+                }
+            });
         });
         $(document).on('click','.dels',function(){
-            var u_id='';
+            var p_id='';
             $('.fu').each(function(){
                 if($(this).prop('checked')){
-                    u_id +=','+$(this).parent().parent().attr('u_id');
+                    p_id +=','+$(this).parent().parent().attr('p_id');
                 }
             });
-            if(u_id == ''){
+            if(p_id == ''){
                 layer.alert('请选择数据',{icon:5,time:3000});return;
             }
             $.ajax({
-                url:"{{url('yuan/dels')}}",
-                data:{u_id:u_id},
+                url:"{{url('pay/dels')}}",
+                data:{p_id:p_id},
                 method:"post",
                 dataType:"json",
                 success:function(res){
-                        if(res.code == 2){
-                            layer.alert(res.message,{icon:1,time:3000});
-                            setTimeout(function(){
-                                window.location.reload();//刷新当前页面.
-                            },1000)
-                        }else{
-                            layer.alert(res.message,{icon:5,time:3000});
-                        }
+                    if(res.code == 2){
+                        layer.alert(res.message,{icon:1,time:3000});
+                        setTimeout(function(){
+                            window.location.reload();//刷新当前页面.
+                        },1000)
+                    }else{
+                        layer.alert(res.message,{icon:5,time:3000});
+                    }
                 }
             });
         });

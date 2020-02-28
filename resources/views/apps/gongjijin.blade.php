@@ -178,7 +178,7 @@
                         alert(res.message);
                     }else if(res.code==3){
                         alert(res.message);
-                        location.href='/pay/order';
+                        location.href='/app/order';
                     }
                 }
             });

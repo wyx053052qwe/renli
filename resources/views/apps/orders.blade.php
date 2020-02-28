@@ -40,7 +40,7 @@
             <div class="order_item_content">
                 <div class="order_item_text clear_both">
                     <p class="order_item_text_lf">时间：</p>
-                    <p class="order_item_text_rt">{{$d->p_month}}</p>
+                    <p class="order_item_text_rt">{{$d->a_month}}</p>
                 </div>
                 <div class="order_item_text clear_both">
                     <p class="order_item_text_lf">姓名：</p>
@@ -48,7 +48,7 @@
                 </div>
                 <div class="order_item_text clear_both">
                     <p class="order_item_text_lf">支付金额：</p>
-                    <p class="order_item_text_rt">{{$d->p_money}}元</p>
+                    <p class="order_item_text_rt">{{$d->total_amount/100}}元</p>
                 </div>
             </div>
         </div>

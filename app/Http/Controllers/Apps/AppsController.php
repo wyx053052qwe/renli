@@ -56,8 +56,7 @@ class AppsController extends Controller
         $u_id = session('u_id');
         $data = DB::table('alipay')
             ->join('personnel','alipay.u_id','=','personnel.u_id')
-            ->join('pay','alipay.u_id','=','pay.u_id')
-            ->where(['alipay.u_id'=>$u_id])->get();
+            ->where(['alipay.u_id'=>$u_id,'a_status'=>1,'a_delete'=>1])->get();
 //dd($data);
         if($data->first()){
             $data = $data;
@@ -74,8 +73,7 @@ class AppsController extends Controller
         $u_id = session('u_id');
         $data = DB::table('alipay')
             ->join('personnel','alipay.u_id','=','personnel.u_id')
-            ->join('pay','alipay.u_id','=','pay.u_id')
-            ->where(['alipay.u_id'=>$u_id,'pay.p_status'=>2])->get();
+            ->where(['alipay.u_id'=>$u_id,'a_status'=>2,'a_delete'=>1])->get();
         if($data->first()){
             $data = $data;
         }else{
@@ -143,6 +141,7 @@ class AppsController extends Controller
             'p_month' => $month,
             'p_money' => $zong,
             'type'=>1,
+            'delete'=>1,
             'p_status'=>1,
             'create_time' => time(),
         ];
@@ -214,6 +213,8 @@ class AppsController extends Controller
                 'total_amount'=>$data['p_money']*100,
                 'u_id'=>$u_id,
                 'a_status' => 1,
+                'a_delete'=>1,
+                'created_time'=>time(),
                 'type'=>$data['type']
             ]);
         }

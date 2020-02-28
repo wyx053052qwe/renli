@@ -40,7 +40,7 @@
                 <div class="order_item_content">
                     <div class="order_item_text clear_both">
                         <p class="order_item_text_lf">时间：</p>
-                        <p class="order_item_text_rt">{{$d->p_month}}</p>
+                        <p class="order_item_text_rt">{{$d->a_month}}</p>
                     </div>
                     <div class="order_item_text clear_both">
                         <p class="order_item_text_lf">姓名：</p>
@@ -48,14 +48,14 @@
                     </div>
                     <div class="order_item_text clear_both">
                         <p class="order_item_text_lf">支付金额：</p>
-                        <p class="order_item_text_rt">{{$d->p_money}}元</p>
+                        <p class="order_item_text_rt">{{$d->total_amount/100}}元</p>
                     </div>
                 </div>
             </div>
             <div class="order_item_bottom clear_both">
                 <div class="order_btn pay_btn">
                     <a class="order_pay_green"
-                       href="/pay/cofirm">去支付</a>
+                       href="/app/order_cofirm">去支付</a>
                 </div>
 <!--                <div class="order_btn pay_btn" onclick="location.href='/wxpay/?order_type=SS&order_id=207573'">立即支付</div>-->
                 <div class="order_btn cancel_order">

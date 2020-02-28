@@ -103,95 +103,126 @@
 <body>
 <table class="layui-table">
     <tr>
-        <th><input type="checkbox" class="checkbox">全选</th>
-        <th>姓名</th>
-        <th>公司</th>
-        <th>身份证号</th>
-        <th>缴存月数</th>
-        <th>缴存数额</th>
-        <th>状态</th>
-        <th>支付时间</th>
-        <th>创建订单时间</th>
-        <th>操作</th>
+        <td><input type="checkbox" class="checkbox">全选</td>
+        <td>服务名称</td>
+        <td>年套餐</td>
+        <td>半年套餐</td>
+        <td>季套餐</td>
+        <td>月套餐</td>
+        <td>操作</td>
     </tr>
-<script src="../../../layuiadmin/layui/layui.js"></script>
-<script>
-    layui.config({
-        base: '../../../layuiadmin/' //静态资源所在路径
-    }).extend({
-        index: 'lib/index' //主入口模块
-    }).use(['index', 'contlist', 'table','jquery', 'layer', 'upload', 'excel', 'laytpl', 'element', 'code','laypage'], function(){
-        var table = layui.table
-            ,form = layui.form
-            ,layer = layui.layer
-            ,excel = layui.excel
-            ,laytpl = layui.laytpl
-            ,element = layui.element
+    @foreach($data as $k=>$d)
+    <tr>
+    <tr s_id="{{$d->s_id}}">
+        <td>
+            <input type="checkbox" class="fu" >
+            {{$d->s_id}}
+        </td>
+        <td>
+            @if($d->type == 1) 社保
+            @else 公积金
+            @endif
+        </td>
+        <td>原价：{{$nian[$k]->yuan}}元 现价：{{$nian[$k]->xian}}元</td>
+        <td>原价：{{$ban[$k]->yuan}}元 现价：{{$ban[$k]->xian}}元</td>
+        <td>原价：{{$ji[$k]->yuan}}元 现价：{{$ji[$k]->xian}}元</td>
+        <td>原价：{{$yue[$k]->yuan}}元 现价：{{$yue[$k]->xian}}元</td>
+        <td><div class="layui-btn-group">
+                <button type="button" class="layui-btn layui-btn-sm">
+                    <i class="layui-icon  update">&#xe642;</i>
+                </button>
+                <button type="button" class="layui-btn layui-btn-sm">
+                    <i class="layui-icon  del">&#xe640;</i>
+                </button>
+            </div></td>
+    </tr>
+    @endforeach
+</table>
+<div>
+    <button class="layui-btn dels" lay-submit lay-filter="formDemo">批量删除</button>
+</div>
+<div id="test1">
+    {{$data->links()}}
+</div>
 
-        //监听搜索
-        form.on('submit(LAY-app-contlist-search)', function(data){
-            var field = data.field;
+    <script src="../../../layuiadmin/layui/layui.js"></script>
+    <script>
+        layui.config({
+            base: '../../../layuiadmin/' //静态资源所在路径
+        }).extend({
+            index: 'lib/index' //主入口模块
+        }).use(['index', 'contlist', 'table','jquery', 'layer', 'upload', 'excel', 'laytpl', 'element', 'code','laypage'], function(){
+            var table = layui.table
+                ,form = layui.form
+                ,layer = layui.layer
+                ,excel = layui.excel
+                ,laytpl = layui.laytpl
+                ,element = layui.element
 
-            //执行重载
-            table.reload('LAY-app-content-list', {
-                where: field
+            //监听搜索
+            form.on('submit(LAY-app-contlist-search)', function(data){
+                var field = data.field;
+
+                //执行重载
+                table.reload('LAY-app-content-list', {
+                    where: field
+                });
             });
-        });
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
 
 
 //全选
-        $(document).on('click', ".checkbox",function(){
-            if($(this).prop('checked')){
-                $('.fu').each(function(){
-                    $('.fu').prop('checked',true);
-                });
-            }else{
-                $('.fu').each(function(){
-                    $('.fu').prop('checked',false);
-                });
-            }
-        });
-         //删除
-        $(document).on('click','.del',function(){
-           var u_id = $(this).parents('td').parent('tr').attr('u_id');
-           $.ajax({
-               url:"/yuan/delete",
-               method: "post",
-               data:{u_id:u_id},
-               dataType:"json",
-               success:function(res){
-                   if(res.code==2){
-                       layer.alert(res.message,{icon:1,time:6000});
-                       setTimeout(function(){
-                           window.location.reload();//刷新当前页面.
-                       },1000)
-                   }else{
-                       layer.alert(res.message,{icon:5,time:5000});
-                   }
-               }
-           });
-        });
-        $(document).on('click','.dels',function(){
-            var u_id='';
-            $('.fu').each(function(){
+            $(document).on('click', ".checkbox",function(){
                 if($(this).prop('checked')){
-                    u_id +=','+$(this).parent().parent().attr('u_id');
+                    $('.fu').each(function(){
+                        $('.fu').prop('checked',true);
+                    });
+                }else{
+                    $('.fu').each(function(){
+                        $('.fu').prop('checked',false);
+                    });
                 }
             });
-            if(u_id == ''){
-                layer.alert('请选择数据',{icon:5,time:3000});return;
-            }
-            $.ajax({
-                url:"{{url('yuan/dels')}}",
-                data:{u_id:u_id},
-                method:"post",
-                dataType:"json",
-                success:function(res){
+            //删除
+            $(document).on('click','.del',function(){
+                var s_id = $(this).parents('td').parent('tr').attr('s_id');
+                $.ajax({
+                    url:"/shop/delete",
+                    method: "post",
+                    data:{s_id:s_id},
+                    dataType:"json",
+                    success:function(res){
+                        if(res.code==2){
+                            layer.alert(res.message,{icon:1,time:6000});
+                            setTimeout(function(){
+                                window.location.reload();//刷新当前页面.
+                            },1000)
+                        }else{
+                            layer.alert(res.message,{icon:5,time:5000});
+                        }
+                    }
+                });
+            });
+            $(document).on('click','.dels',function(){
+                var s_id='';
+                $('.fu').each(function(){
+                    if($(this).prop('checked')){
+                        s_id +=','+$(this).parent().parent().attr('s_id');
+                    }
+                });
+                if(s_id == ''){
+                    layer.alert('请选择数据',{icon:5,time:3000});return;
+                }
+                $.ajax({
+                    url:"{{url('shop/dels')}}",
+                    data:{s_id:s_id},
+                    method:"post",
+                    dataType:"json",
+                    success:function(res){
                         if(res.code == 2){
                             layer.alert(res.message,{icon:1,time:3000});
                             setTimeout(function(){
@@ -200,11 +231,11 @@
                         }else{
                             layer.alert(res.message,{icon:5,time:3000});
                         }
-                }
+                    }
+                });
             });
-        });
 
-    });
-</script>
+        });
+    </script>
 </body>
 </html>

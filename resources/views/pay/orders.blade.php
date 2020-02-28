@@ -86,7 +86,7 @@
 
                                         <tr>
                                             <td colspan="6" class="dingdan_tit_td" style="">
-                                                <span>{{date('Y-m-d H:i:s',$d->create_time)}}</span>
+                                                <span>{{date('Y-m-d H:i:s',$d->created_time)}}</span>
                                                 <span class="margin_l40">订单号：</span> <span class="dingdan_num">
                                           {{$d->out_trade_no}}
                                         </span>
@@ -97,7 +97,7 @@
                                                 @if($d->type==1) 社保服务 @elseif($d->type==2) 公积金服务 @endif
                                             </td>
                                             <td>
-                                                {{$d->p_month}}
+                                                {{$d->a_month}}
                                             </td>
                                             <td>
                                 <span>
@@ -106,7 +106,7 @@
                                             </td>
                                             <td>
                                         <span class="table_money_bl">
-￥{{$d->p_money}}
+￥{{$d->total_amount/100}}
                                                                                         </span>
                                             </td>
                                             <td>

@@ -9,7 +9,24 @@ class ShopController extends Controller
 {
     public function index()
     {
-        return view('shop.index');
+        $data = Shop::paginate(10);
+        $nian = [];
+        $ban = [];
+        $ji = [];
+        $yue = [];
+        foreach($data as $k=>$v){
+            $nian[] = json_decode($v->nian);
+            $ban[] = json_decode($v->ban);
+            $ji[] = json_decode($v->ji);
+            $yue[] = json_decode($v->yue);
+        }
+        return view('shop.index',[
+            'data'=>$data,
+            'nian'=>$nian,
+            'ban'=>$ban,
+            'ji'=>$ji,
+            'yue'=>$yue
+        ]);
     }
     public function add()
     {
@@ -39,5 +56,25 @@ class ShopController extends Controller
         } else {
             return json_encode(['code' => 1, 'message' => "添加失败"]);
         }
+    }
+    //删除
+    public function delete()
+    {
+        $s_id = request()->input('s_id');
+        $result = Shop::where('s_id',$s_id)->delete();
+        if(!$result){
+            return json_encode(['code'=>1,'message'=>"删除失败"]);
+        }
+        return json_encode(['code'=>2,'message'=>"删除成功"]);
+    }
+    public function dels()
+    {
+        $s_id = request()->input('s_id');
+        $s_id = explode(',',trim($s_id,','));
+        $result = Shop::whereIN('s_id',$s_id)->delete();
+        if(!$result){
+            return json_encode(['code'=>1,'message'=>"删除失败"]);
+        }
+        return json_encode(['code'=>2,'message'=>"删除成功"]);
     }
 }

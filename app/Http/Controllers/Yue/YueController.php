@@ -74,5 +74,25 @@ class YueController extends Controller
             return json_encode(['code'=>1,'message'=>"添加失败"]);
         }
     }
+    //删除
+    public function delete()
+    {
+        $y_id = request()->input('y_id');
+        $result = Yue::where('y_id',$y_id)->delete();
+        if(!$result){
+            return json_encode(['code'=>1,'message'=>"删除失败"]);
+        }
+        return json_encode(['code'=>2,'message'=>"删除成功"]);
+    }
+    public function dels()
+    {
+        $y_id = request()->input('y_id');
+        $y_id = explode(',',trim($y_id,','));
+        $result = Yue::whereIN('y_id',$y_id)->delete();
+        if(!$result){
+            return json_encode(['code'=>1,'message'=>"删除失败"]);
+        }
+        return json_encode(['code'=>2,'message'=>"删除成功"]);
+    }
 
 }
