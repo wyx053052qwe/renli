@@ -319,11 +319,11 @@ class PayController extends Controller
             $app_id = $data['app_id'];
             $total_amount = $data['total_amount'];
 
-            if ($data['trade_status'] == 'TRADE_FINISHED') {
+            if ($trade_status == 'TRADE_FINISHED') {
                 //注意：
                 //退款日期超过可退款期限后（如三个月可退款），支付宝系统发送该交易状态通知
                 $this->UserCharge($total_amount, 'alipay', $out_trade_no, $buyer_id, 2, $seller_id, $app_id);
-            } else if ($data['trade_status'] == 'TRADE_SUCCESS') {
+            } else if ($trade_status == 'TRADE_SUCCESS') {
                 //注意：
                 //付款完成后，支付宝系统发送该交易状态通知
                 $this->UserCharge($total_amount, 'alipay', $out_trade_no, $buyer_id, 2, $seller_id, $app_id);
