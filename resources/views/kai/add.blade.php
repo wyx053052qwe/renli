@@ -138,6 +138,7 @@
                         layer.msg(res.message,{icon:5,time:3000});
                     }else if(res.code==2){
                         layer.msg(res.message,{icon:1,time:3000});
+                        location.href="{{'/kai/index'}}";
                     }
                 }
 

@@ -6,10 +6,10 @@ return [
         'app_id' => env('ALI_APP_ID', '2016092900622122'),
 
         // 支付宝异步通知地址
-        'notify_url' => 'http://http://renli.wangyunxing.club/pay/notify',
+        'notify_url' => 'http://renli.wangyunxing.club/pay/notify',
 
         // 支付成功后同步通知地址
-        'return_url' => 'http://http://renli.wangyunxing.club/pay/return',
+        'return_url' => 'http://renli.wangyunxing.club/pay/return',
 
         // 支付宝公钥
         'ali_public_key' => env('ALI_PUBLIC_KEY', 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAv/GJTDZ8PugqTD0b+T/z08fw1PBzFuTLBTwjsuQgUUocdgGEZSfAolWCVD1QZq6b9XgunPP8xC2uu9HgvyJ1cLBiQWxEWmfc5bkj5AUzdHwRsoyR6QxfH9K6oUdUND1CmzttuGT6ddO4z7aHfgNlouSSSQFr1k3Y4XwFIJvPWdy0tCSPtkRiyT8jsdh7GEONTl91A+PuolZQzFhP6JLSqXXHl5b60riLX3dYqpAQHkUaOZtm1jJFlpcXRNdxZjoIqpMlGy5wk1rWlST7ZqUsM0HjZ8BX+7CQ+8w6zyslQ4YtYk4HEitux7v0tKUoKDDEYuWzSF4YA0oeFvqXVYD97QIDAQAB'),
