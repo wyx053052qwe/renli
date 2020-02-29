@@ -87,8 +87,9 @@ Route::prefix('/pay')->middleware('checklogin')->group(function () {
     Route::post('dels', 'Pay\PayController@dels');
     Route::post('delete', 'Pay\PayController@delete');
     Route::get('return', 'Pay\PayController@return');
-    Route::post('notify', 'Pay\PayController@notify');
+
 });
+Route::post('/pay/notify', 'Pay\PayController@notify');
 Route::get('/shebao','Index\IndexController@shebao');
 Route::get('/gongjijin','Index\IndexController@gongjijin');
 //app
