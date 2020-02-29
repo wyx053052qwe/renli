@@ -266,8 +266,7 @@ class PayController extends Controller
             echo "<script>alert('你已经支付过了');location.href='/';</script>>";
         }
         if(empty($arr)){
-
-            $p_id=DB::table('alipay')->insertGetId([
+            DB::table('alipay')->insert([
                 'out_trade_no'=>$out_trade_no,
                 'total_amount'=>$data['p_money']*100,
                 'u_id'=>$u_id,
@@ -277,9 +276,7 @@ class PayController extends Controller
                 'created_time'=>time(),
                 'type'=>$data['type']
             ]);
-            Pays::where(['u_id'=>$u_id,'p_status'=>1])->update(['out_trade_no'=>$data->out_trade_no,'p_id'=>$p_id]);
         }else{
-            Pays::where(['u_id'=>$u_id,'p_status'=>1])->update(['out_trade_no'=>$data->out_trade_no]);
             DB::table('alipay')->where(['u_id'=>$u_id,'a_status'=>1])->update([
                 'out_trade_no'=>$out_trade_no,
                 'total_amount'=>$data['p_money']*100,
@@ -308,8 +305,6 @@ class PayController extends Controller
                 'a_status' => 1,
                 'u_id' => $u_id,
             ];
-            $id = DB::table('alipay')->where('a_status',1)->first(['p_id']);
-            Pays::whrere(['u_id'=>$u_id,'p_status'=>1])->update(['out_trade_no'=>$data->out_trade_no,'p_id'=>$id->p_id]);
             DB::table('alipay')->where('out_trade_no',$data->out_trade_no)->update([
                 'trade_no'=>$data->trade_no,
                 'app_id'=>$data->app_id,
@@ -353,7 +348,7 @@ class PayController extends Controller
                 //付款完成后，支付宝系统发送该交易状态通知
 //                $this->UserCharge($total_amount, 'alipay', $out_trade_no, $buyer_id, 2, $seller_id, $app_id);
                 DB::table('alipay')->where(['out_trade_no'=>$out_trade_no])->update(['a_status' => 2, 'updated_time' => time()]);
-                Pays::where(['out_trade_no'=>$out_trade_no])->update(['p_status' => 2]);
+                Pays::where(['out_trade_no'=>$out_trade_no])->update(['a_status' => 2, 'updated_time' => time()]);
                 //修改订单状态
             }
             //写入日志便于查看
@@ -372,9 +367,7 @@ class PayController extends Controller
         if(empty($p_id)){
             return json_encode(['code'=>1,'message'=>"失败"]);
         }
-        $p_id= $p_id->u_id;
         $res = DB::table('alipay')->where('p_id',$id)->update(['a_delete'=>2]);
-        $ress =Pays::where('p_id',$id)->update(['delete'=>2]);
         if($res){
             return json_encode(['code'=>2,'message'=>"成功"]);
         }else{
