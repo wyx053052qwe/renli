@@ -240,7 +240,7 @@ class PayController extends Controller
     public function pays()
     {
         $u_id = session('u_id');
-        $data = Pays::where(['u_id'=>$p_id,'p_status'=>1])->first(['p_money', 'type','p_month']);
+        $data = Pays::where(['u_id'=>$u_id,'p_status'=>1])->first(['p_money', 'type','p_month']);
 //        dd($data);
         if (empty($data)) {
             return redirect('/');
