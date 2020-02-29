@@ -21,7 +21,7 @@ return [
         'log' => [
             'file' => storage_path('logs/alipay.log'),
             'level' => 'debug',
-              'type' => 'daily', // optional, 可选 daily.
+//            'type' => 'daily', // optional, 可选 daily.
             //  'max_file' => 30,
         ],
 

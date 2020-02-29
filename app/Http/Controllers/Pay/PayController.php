@@ -324,7 +324,7 @@ class PayController extends Controller
 //                //退款日期超过可退款期限后（如三个月可退款），支付宝系统发送该交易状态通知
 //                $this->UserCharge($total_amount, 'alipay', $out_trade_no, $buyer_id, 2, $seller_id, $app_id);
 //            } else
-            if ($trade_status != 'TRADE_SUCCESS') {
+            if ($trade_status == 'TRADE_SUCCESS') {
                 //注意：
                 //付款完成后，支付宝系统发送该交易状态通知
 //                $this->UserCharge($total_amount, 'alipay', $out_trade_no, $buyer_id, 2, $seller_id, $app_id);
@@ -332,7 +332,8 @@ class PayController extends Controller
                 //修改订单状态
             }
             //写入日志便于查看
-            Log::debug('Alipay notify', $data->all());
+        file_put_contents('notify',$data->all());
+//            Log::debug('Alipay notify', $data->all());
 
             //抛出异常
 //            $e->getMessage();
