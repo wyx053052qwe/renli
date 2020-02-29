@@ -239,7 +239,7 @@ class PayController extends Controller
     }
     public function pays()
     {
-        $p_id = session('u_id');
+        $u_id = session('u_id');
         $data = Pays::where(['u_id'=>$p_id,'p_status'=>1])->first(['p_money', 'type','p_month']);
 //        dd($data);
         if (empty($data)) {
@@ -256,12 +256,23 @@ class PayController extends Controller
             'total_amount' => $data['p_money'],
             'subject' => $type,
         ];
-        $arr = DB::table('alipay')->where(['u_id'=>$p_id,'a_status'=>1])->first();
+        $arr = DB::table('alipay')->where(['u_id'=>$u_id,'a_status'=>1])->first();
         if(empty($arr)){
             DB::table('alipay')->insert([
                 'out_trade_no'=>$out_trade_no,
                 'total_amount'=>$data['p_money']*100,
                 'u_id'=>$p_id,
+                'a_month'=>$data['p_month'],
+                'a_status' => 1,
+                'a_delete'=>1,
+                'created_time'=>time(),
+                'type'=>$data['type']
+            ]);
+        }else{
+            DB::table('alipay')->where(['u_id'=>$u_id])->update([
+                'out_trade_no'=>$out_trade_no,
+                'total_amount'=>$data['p_money']*100,
+                'u_id'=>$u_id,
                 'a_month'=>$data['p_month'],
                 'a_status' => 1,
                 'a_delete'=>1,
@@ -311,13 +322,13 @@ class PayController extends Controller
             //商户订单号
             $out_trade_no = $data['out_trade_no'];
             //支付宝交易号
-            $trade_no = $data['trade_no'];
+//            $trade_no = $data['trade_no'];
             //交易状态
             $trade_status = $data['trade_status'];
-            $buyer_id = $data['buyer_id'];
-            $seller_id = $data['seller_id'];
-            $app_id = $data['app_id'];
-            $total_amount = $data['total_amount'];
+//            $buyer_id = $data['buyer_id'];
+//            $seller_id = $data['seller_id'];
+//            $app_id = $data['app_id'];
+//            $total_amount = $data['total_amount'];
 
 //            if ($trade_status == 'TRADE_FINISHED') {
 //                //注意：
