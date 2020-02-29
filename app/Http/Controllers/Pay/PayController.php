@@ -266,7 +266,8 @@ class PayController extends Controller
             echo "<script>alert('你已经支付过了');location.href='/';</script>>";
         }
         if(empty($arr)){
-            DB::table('alipay')->insert([
+
+            $p_id=DB::table('alipay')->insertGetId([
                 'out_trade_no'=>$out_trade_no,
                 'total_amount'=>$data['p_money']*100,
                 'u_id'=>$u_id,
@@ -276,7 +277,9 @@ class PayController extends Controller
                 'created_time'=>time(),
                 'type'=>$data['type']
             ]);
+            Pays::where(['u_id'=>$u_id,'p_status'=>1])->update(['out_trade_no'=>$data->out_trade_no,'p_id'=>$p_id]);
         }else{
+            Pays::where(['u_id'=>$u_id,'p_status'=>1])->update(['out_trade_no'=>$data->out_trade_no]);
             DB::table('alipay')->where(['u_id'=>$u_id,'a_status'=>1])->update([
                 'out_trade_no'=>$out_trade_no,
                 'total_amount'=>$data['p_money']*100,
@@ -305,7 +308,8 @@ class PayController extends Controller
                 'a_status' => 1,
                 'u_id' => $u_id,
             ];
-            Pays::whrere(['u_id'=>$u_id,'p_status'=>1])->update(['out_trade_no'=>$data->out_trade_no]);
+            $id = DB::table('alipay')->where('a_status',1)->first(['p_id']);
+            Pays::whrere(['u_id'=>$u_id,'p_status'=>1])->update(['out_trade_no'=>$data->out_trade_no,'p_id'=>$id->p_id]);
             DB::table('alipay')->where('out_trade_no',$data->out_trade_no)->update([
                 'trade_no'=>$data->trade_no,
                 'app_id'=>$data->app_id,
@@ -370,6 +374,7 @@ class PayController extends Controller
         }
         $p_id= $p_id->u_id;
         $res = DB::table('alipay')->where('p_id',$id)->update(['a_delete'=>2]);
+        $ress =Pays::where('p_id',$id)->update(['delete'=>2]);
         if($res){
             return json_encode(['code'=>2,'message'=>"成功"]);
         }else{
