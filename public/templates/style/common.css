@@ -575,7 +575,7 @@ a.add-btn{display:inline-block;margin:0 10px 0 0;padding:0 14px;height:28px;vert
 .low_jishu{position:absolute;left:330px;color:#0DD575;cursor:pointer;}
 .set_meal{overflow:hidden;}
 .set_meal_ul{height:90px;}
-.set_meal_ul li{float:left;box-sizing:border-box;margin-right:15px;width:179px;height:90px;border:1px solid #D5D5D5;color:#24C26D;text-align:center;line-height:25px;cursor:pointer;}
+.set_meal_ul li{float:left;box-sizing:border-box;margin-right:15px;width:198px;height:90px;border:1px solid #D5D5D5;color:#24C26D;text-align:center;line-height:25px;cursor:pointer;}
 .set_meal_ul li del{color:#c1c1c1;line-height:25px;}
 .set_meal_ul li span{font-size:22px;line-height:25px;}
 .set_meal_ul li *{float:none;}

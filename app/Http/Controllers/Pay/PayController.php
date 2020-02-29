@@ -327,7 +327,7 @@ class PayController extends Controller
             if ($trade_status == 'TRADE_SUCCESS') {
                 //注意：
                 //付款完成后，支付宝系统发送该交易状态通知
-                $this->UserCharge($total_amount, 'alipay', $out_trade_no, $buyer_id, 2, $seller_id, $app_id);
+//                $this->UserCharge($total_amount, 'alipay', $out_trade_no, $buyer_id, 2, $seller_id, $app_id);
                 DB::table('alipay')->where(['out_trade_no'=>$out_trade_no])->update(['a_status' => 2, 'updated_time' => time()]);
                 //修改订单状态
             }
