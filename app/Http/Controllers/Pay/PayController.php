@@ -292,7 +292,9 @@ class PayController extends Controller
                 'u_id' => $p_id,
 
             ]);
-            return view('pay.return');
+            return view('pay.return',[
+                'total_amount'=>$total_amount
+            ]);
         } else {
             echo "支付失败";
         }
@@ -305,8 +307,6 @@ class PayController extends Controller
     public function notify()
     {
         $alipay = Pay::alipay();
-
-        try {
             $data = $alipay->verify(); // 是的，验签就这么简单！
             //商户订单号
             $out_trade_no = $data['out_trade_no'];
@@ -328,19 +328,14 @@ class PayController extends Controller
                 //注意：
                 //付款完成后，支付宝系统发送该交易状态通知
                 $this->UserCharge($total_amount, 'alipay', $out_trade_no, $buyer_id, 2, $seller_id, $app_id);
-//                DB::table('alipay')->where(['out_trade_no'=>$out_trade_no])->update(['a_status' => 2, 'updated_time' => time()]);
+                DB::table('alipay')->where(['out_trade_no'=>$out_trade_no])->update(['a_status' => 2, 'updated_time' => time()]);
                 //修改订单状态
-                DB::table('alipay')->insert(['a_status'=>2,'updated_time'=>time()]);
             }
-
             //写入日志便于查看
             Log::debug('Alipay notify', $data->all());
 
-        } catch (Exception $e) {
             //抛出异常
-            $e->getMessage();
-        }
-
+//            $e->getMessage();
         return $alipay->success(); // laravel 框架中请直接 `return $alipay->success()`
     }
     public function del()
