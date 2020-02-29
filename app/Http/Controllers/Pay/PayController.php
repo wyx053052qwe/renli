@@ -56,14 +56,14 @@ class PayController extends Controller
     {
         $data = request()->post();
         $p_id = session('u_id');
-        $user = DB::table('alipay')->where(['u_id' => $p_id, 'a_status' => 1])->first();
+        $user = DB::table('alipay')->where(['u_id' => $p_id, 'a_status' => 1,'a_delete'=>1])->first();
         if ($user) {
             return json_encode(['code' => 3, 'message' => "你有订单未支付请先支付"]);
         }
         if(empty($user)){
             Pays::where(['u_id'=>$p_id,'p_status'=>1])->delete();
         }
-        $dataa = Pays::where(['u_id'=>$p_id,'p_status'=>1])->first();
+        $dataa = Pays::where(['u_id'=>$p_id,'p_status'=>1,'delete'=>1])->first();
         if($dataa){
             return json_encode(['code' => 3, 'message' => "你有订单未支付请先支付"]);
         }
@@ -127,11 +127,14 @@ class PayController extends Controller
     {
         $data = request()->post();
         $p_id = session('u_id');
-        $user = DB::table('alipay')->where(['u_id' => $p_id, 'a_status' => 1])->first();
+        $user = DB::table('alipay')->where(['u_id' => $p_id, 'a_status' => 1,'a_delete'=>1])->first();
         if ($user) {
             return json_encode(['code' => 3, 'message' => "你有订单未支付请先支付"]);
         }
-        $dataa = Pays::where(['u_id'=>$p_id,'p_status'=>1])->first();
+        if(empty($user)){
+            Pays::where(['u_id'=>$p_id,'p_status'=>1])->delete();
+        }
+        $dataa = Pays::where(['u_id'=>$p_id,'p_status'=>1,'delete'=>1])->first();
         if($dataa){
             return json_encode(['code' => 3, 'message' => "你有订单未支付请先支付"]);
         }
@@ -257,6 +260,11 @@ class PayController extends Controller
             'subject' => $type,
         ];
         $arr = DB::table('alipay')->where(['u_id'=>$u_id,'a_status'=>1])->first();
+        $arrs = DB::table('alipay')->where(['u_id'=>$u_id,'a_status'=>2,'a_month'=>$data->p_month,'type'=>$data['type']])->first();
+//        dd($arrs);
+        if($arrs){
+            echo "<script>alert('你已经支付过了');location.href='/';</script>>";
+        }
         if(empty($arr)){
             DB::table('alipay')->insert([
                 'out_trade_no'=>$out_trade_no,
@@ -269,7 +277,7 @@ class PayController extends Controller
                 'type'=>$data['type']
             ]);
         }else{
-            DB::table('alipay')->where(['u_id'=>$u_id])->update([
+            DB::table('alipay')->where(['u_id'=>$u_id,'a_status'=>1])->update([
                 'out_trade_no'=>$out_trade_no,
                 'total_amount'=>$data['p_money']*100,
                 'u_id'=>$u_id,
@@ -288,19 +296,20 @@ class PayController extends Controller
         $data = Pay::alipay()->verify(); // 是的，验签就这么简单！
         if ($data) {
             $total_amount = $data->total_amount * 100;
-            $p_id = session('u_id');
+            $u_id = session('u_id');
             $arr = [
                 'out_trade_no' => $data->out_trade_no,
                 'trade_no' => $data->trade_no,
                 'total_amount' => $total_amount,
                 'app_id' => $data->app_id,
                 'a_status' => 1,
-                'u_id' => $p_id,
+                'u_id' => $u_id,
             ];
+            Pays::whrere(['u_id'=>$u_id,'p_status'=>1])->update(['out_trade_no'=>$data->out_trade_no]);
             DB::table('alipay')->where('out_trade_no',$data->out_trade_no)->update([
                 'trade_no'=>$data->trade_no,
                 'app_id'=>$data->app_id,
-                'u_id' => $p_id,
+                'u_id' => $u_id,
 
             ]);
             return view('pay.return',[
@@ -340,6 +349,7 @@ class PayController extends Controller
                 //付款完成后，支付宝系统发送该交易状态通知
 //                $this->UserCharge($total_amount, 'alipay', $out_trade_no, $buyer_id, 2, $seller_id, $app_id);
                 DB::table('alipay')->where(['out_trade_no'=>$out_trade_no])->update(['a_status' => 2, 'updated_time' => time()]);
+                Pays::where(['out_trade_no'=>$out_trade_no])->update(['p_status' => 2]);
                 //修改订单状态
             }
             //写入日志便于查看
