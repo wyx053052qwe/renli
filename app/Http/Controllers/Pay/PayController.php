@@ -279,7 +279,7 @@ class PayController extends Controller
             ]);
             Pays::where(['u_id'=>$u_id,'p_status'=>1])->update(['out_trade_no'=>$data->out_trade_no,'p_id'=>$p_id]);
         }else{
-            Pays::where(['u_id'=>$u_id,'p_status'=>1])->update(['out_trade_no'=>$data->out_trade_no]);
+            Pays::where(['u_id'=>$u_id,'p_status'=>1])->update(['out_trade_no'=>$data->out_trade_no,'p_id'=>$p_id]);
             DB::table('alipay')->where(['u_id'=>$u_id,'a_status'=>1])->update([
                 'out_trade_no'=>$out_trade_no,
                 'total_amount'=>$data['p_money']*100,
