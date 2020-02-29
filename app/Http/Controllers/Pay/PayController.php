@@ -332,8 +332,8 @@ class PayController extends Controller
                 //修改订单状态
             }
             //写入日志便于查看
-        file_put_contents('notify',$data->all());
-//            Log::debug('Alipay notify', $data->all());
+//        file_put_contents('notify',$data->all());
+            Log::debug('Alipay notify', $data->all());
 
             //抛出异常
 //            $e->getMessage();
