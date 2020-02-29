@@ -261,7 +261,7 @@ class PayController extends Controller
             DB::table('alipay')->insert([
                 'out_trade_no'=>$out_trade_no,
                 'total_amount'=>$data['p_money']*100,
-                'u_id'=>$p_id,
+                'u_id'=>$u_id,
                 'a_month'=>$data['p_month'],
                 'a_status' => 1,
                 'a_delete'=>1,
