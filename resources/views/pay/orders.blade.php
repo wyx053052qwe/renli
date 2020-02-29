@@ -210,10 +210,11 @@
                                 if (data.status == 'success') {
                                     layer.msg('取消成功');
                                     layer.close(index);
-                                    location.reload();
+                                    window.location.reload(true)
                                 }
                                 else {
                                     layer.msg(data.message);
+                                    window.location.reload(true)
                                 }
                             }, 'json');
                         }
